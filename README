@@ -1,0 +1,1 @@
+This project requires apache ivy in your ant lib folder, go on and download it yourself because I'm too lazy to add a target to the build.xml file to automagically get it for you.
