@@ -19,7 +19,7 @@
   </path>
 
   <target name="resolve" description="retrieve dependencies with ivy">
-    <ivy:retrieve />
+    <ivy:retrieve type="jar" />
   </target>
    
   <target name="clean">
