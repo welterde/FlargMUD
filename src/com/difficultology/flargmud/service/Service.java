@@ -13,23 +13,16 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */ 
-package com.difficultology.flargmud;
+package com.difficultology.flargmud.service;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.difficultology.flargmud.service.Service;
-import com.difficultology.flargmud.service.FlargMUDServer;
-
-public class Main {
+public interface Service {
   /**
-   * The entry point for the program.
-   * @param args command line arguments
+   * Starts the service.
    */
-  public static void main(String[] args) throws Exception {
-    Injector injector = Guice.createInjector(new FlargMUDModule());
-
-    Service mudServer = injector.getInstance(FlargMUDServer.class); 
-
-    mudServer.start();
-  }
+  public void start() throws Exception;
+  
+  /**
+   * Stop the service.
+   */
+  public void stop();
 }

@@ -15,21 +15,16 @@
  */ 
 package com.difficultology.flargmud;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import com.google.inject.AbstractModule;
 import com.difficultology.flargmud.service.Service;
 import com.difficultology.flargmud.service.FlargMUDServer;
 
-public class Main {
+public class FlargMUDModule extends AbstractModule {
   /**
-   * The entry point for the program.
-   * @param args command line arguments
+   * Configure method for deciding what to inject for each type of class.
    */
-  public static void main(String[] args) throws Exception {
-    Injector injector = Guice.createInjector(new FlargMUDModule());
-
-    Service mudServer = injector.getInstance(FlargMUDServer.class); 
-
-    mudServer.start();
+  @Override 
+  protected void configure() {
+    bind(Service.class).to(FlargMUDServer.class);
   }
 }

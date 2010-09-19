@@ -12,24 +12,32 @@
  * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */ 
-package com.difficultology.flargmud;
+ */
+package com.difficultology.flargmud.service;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.difficultology.flargmud.service.Service;
-import com.difficultology.flargmud.service.FlargMUDServer;
+import junit.framework.*;
+import com.difficultology.flargmud.FlargMUDModule;
+import static org.mockito.Mockito.*;
 
-public class Main {
+public class FlargMUDServerTest extends TestCase {
   /**
-   * The entry point for the program.
-   * @param args command line arguments
+   * Check the start and stop methods.
    */
-  public static void main(String[] args) throws Exception {
-    Injector injector = Guice.createInjector(new FlargMUDModule());
-
-    Service mudServer = injector.getInstance(FlargMUDServer.class); 
-
-    mudServer.start();
+  public void testStartAndStop() {
+    Service mudServer = mock(FlargMUDServer.class);
+    try {
+      mudServer.start();
+    } catch(Exception e) {
+      // If an exception is being thrown here then something is not right.
+      fail(e.getMessage()); 
+    }
+    mudServer.stop();
+    try {
+      verify(mudServer).start();
+    } catch(Exception e) {
+      // If an exception is being thrown here then something is not right.
+      fail(e.getMessage()); 
+    }
+    verify(mudServer).stop();   
   }
 }

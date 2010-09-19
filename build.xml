@@ -4,7 +4,7 @@
   <property name="bin.dir" value="bin" />
   <property name="src.dir" value="src" />
   <property name="jar.name" value="flargmud.jar" />
-  <property name="jar.dir" value="${bin.dir}/jar" />
+  <property name="jar.dir" value="." />
   <property name="classes.dir" value="${bin.dir}/classes" />
   <property name="test.classes.dir" value="${bin.dir}/test/classes" />
   <property name="main.class" value="com.difficultology.flargmud.Main" />
@@ -24,6 +24,7 @@
    
   <target name="clean">
     <delete dir="${bin.dir}" />
+    <delete file="${jar.dir}/${jar.name}" />
   </target>
   <target name="compile" depends="resolve">
     <mkdir dir="${classes.dir}" />
