@@ -18,8 +18,12 @@
     <pathelement location="${jar.dir}/${jar.name}" />
   </path>
 
-  <target name="resolve" description="retrieve dependencies with ivy">
-    <ivy:retrieve type="jar" />
+  <target name="ivy-init"> 
+    <ivy:settings file="ivy-settings.xml" />
+  </target>
+
+  <target name="resolve" description="retrieve dependencies with ivy" depends="ivy-init">
+    <ivy:retrieve />
   </target>
    
   <target name="clean">

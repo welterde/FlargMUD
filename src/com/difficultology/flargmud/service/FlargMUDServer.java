@@ -19,11 +19,18 @@ import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.difficultology.flargmud.network.NetworkManager;
+
 /**
  * The FlargMUD server class for running your own FlargMUD server using the
  * dependencies you want to use and configured just the way you want it to be. 
  */
 public class FlargMUDServer implements Service {
+  /**
+   * The server's network manager.
+   */
+  private NetworkManager networkManager;
+
   /**
    * The logger to use for logging server related information.
    */
@@ -41,12 +48,13 @@ public class FlargMUDServer implements Service {
    * could pose as the way to communicate with clients(get their messages, 
    * send messages back to them, close the connection) and be implemented 
    * without much pain for netty or other ways.  Other things that will be 
-   * needed would be for Room graph management and traversal, Player, NPC,
+   * needed would be for Room/Zone graph management and traversal, Player, NPC,
    * Item, Rank, Spell/Ability, Quest, Combat, Event, Command and anything 
    * else I can think of.  
    */
   @Inject
-  public FlargMUDServer() {
+  public FlargMUDServer(NetworkManager networkManager) {
+    this.networkManager = networkManager;
   }
 
   /**
@@ -58,6 +66,7 @@ public class FlargMUDServer implements Service {
    */
   public void start() throws Exception {
     log.info("Server starting!");
+    networkManager.start();
   }
 
   /**
@@ -65,5 +74,6 @@ public class FlargMUDServer implements Service {
    */
   public void stop() {
     log.info("Stopping server!");
+    networkManager.stop();
   }
 }

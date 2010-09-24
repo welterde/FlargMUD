@@ -16,8 +16,12 @@
 package com.difficultology.flargmud;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
+import com.google.inject.name.Names;
 import com.difficultology.flargmud.service.Service;
 import com.difficultology.flargmud.service.FlargMUDServer;
+import com.difficultology.flargmud.network.NetworkManager;
+import com.difficultology.flargmud.network.NettyNetworkManager;
 
 public class FlargMUDModule extends AbstractModule {
   /**
@@ -26,5 +30,7 @@ public class FlargMUDModule extends AbstractModule {
   @Override 
   protected void configure() {
     bind(Service.class).to(FlargMUDServer.class);
+    bind(NetworkManager.class).to(NettyNetworkManager.class).in(Singleton.class);
+    bindConstant().annotatedWith(Names.named("Server Port")).to(8080);
   }
 }

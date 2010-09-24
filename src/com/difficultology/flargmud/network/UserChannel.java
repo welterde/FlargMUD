@@ -12,31 +12,18 @@
  * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
-package com.difficultology.flargmud.service;
+ */ 
+package com.difficultology.flargmud.network;
 
-import junit.framework.*;
-import static org.mockito.Mockito.*;
-
-public class FlargMUDServerTest extends TestCase {
+public interface UserChannel {
   /**
-   * Check the start and stop methods.
+   * Send the given message to the user.
+   * @param message the message to be sent
    */
-  public void testStartAndStop() {
-    Service mudServer = mock(FlargMUDServer.class);
-    try {
-      mudServer.start();
-    } catch(Exception e) {
-      // If an exception is being thrown here then something is not right.
-      fail(e.getMessage()); 
-    }
-    mudServer.stop();
-    try {
-      verify(mudServer).start();
-    } catch(Exception e) {
-      // If an exception is being thrown here then something is not right.
-      fail(e.getMessage()); 
-    }
-    verify(mudServer).stop();   
-  }
+  public void sendMessage(String message); 
+
+  /**
+   * Disconnect the user from the server for whatever reason.
+   */
+  public void disconnect();
 }
