@@ -1,5 +1,5 @@
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="FlargMUD" default="test" basedir=".">
-  <property name="test.dir" value="tests" />
+  <property name="test.dir" value="test" />
   <property name="lib.dir" value="lib" />
   <property name="bin.dir" value="bin" />
   <property name="src.dir" value="src" />

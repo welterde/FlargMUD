@@ -15,6 +15,8 @@
  */ 
 package com.difficultology.flargmud.service;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +28,11 @@ import com.difficultology.flargmud.network.NetworkManager;
  * dependencies you want to use and configured just the way you want it to be. 
  */
 public class FlargMUDServer implements Service {
+  /**
+   * Has the server already been started?
+   */
+  private AtomicBoolean started = new AtomicBoolean(false);
+
   /**
    * The server's network manager.
    */
@@ -51,6 +58,8 @@ public class FlargMUDServer implements Service {
    * needed would be for Room/Zone graph management and traversal, Player, NPC,
    * Item, Rank, Spell/Ability, Quest, Combat, Event, Command and anything 
    * else I can think of.  
+   *
+   * The server must be started by calling start(), this does not start it.
    */
   @Inject
   public FlargMUDServer(NetworkManager networkManager) {
@@ -66,7 +75,12 @@ public class FlargMUDServer implements Service {
    */
   public void start() throws Exception {
     log.info("Server starting!");
-    networkManager.start();
+  
+    try {
+      networkManager.start();
+    } catch(IllegalStateException e) {
+      throw new IllegalStateException("Network manager already started!", e);
+    } 
   }
 
   /**
@@ -74,6 +88,8 @@ public class FlargMUDServer implements Service {
    */
   public void stop() {
     log.info("Stopping server!");
-    networkManager.stop();
+    try {
+      networkManager.stop();
+    } catch(IllegalStateException e) {}
   }
 }

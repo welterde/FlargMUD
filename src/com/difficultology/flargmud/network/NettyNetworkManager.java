@@ -18,6 +18,7 @@ package com.difficultology.flargmud.network;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.jboss.netty.channel.Channels.*;
 
@@ -45,6 +46,11 @@ import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelStateEvent;
 
 public class NettyNetworkManager extends SimpleChannelUpstreamHandler implements NetworkManager {
+  /**
+   * Has the server already been started?
+   */
+  private AtomicBoolean started = new AtomicBoolean(false);
+
   /**
    * The hash map for getting user channels for netty channels.
    */ 
@@ -90,7 +96,13 @@ public class NettyNetworkManager extends SimpleChannelUpstreamHandler implements
       uc.disconnect(); 
     } else if(message.equals("shutdown")) {
       uc.sendMessage("Server going down... NOW!");
-      stop();
+      // If receivedMessage is being called then anything thrown by stop can be
+      // ignored as it is either for sure running(this being called by netty)
+      // or it is being tested with mock users and hypothetical messages being
+      // thrown in.
+      try {
+        stop();
+      } catch(IllegalStateException e) {}
     } else {
       uc.sendMessage(message+"\n");
     }
@@ -120,6 +132,16 @@ public class NettyNetworkManager extends SimpleChannelUpstreamHandler implements
    * Start the network manager.
    */
   public void start() throws Exception {
+    if(!started.compareAndSet(false, true)) {
+      throw new IllegalStateException("You already started the server!");   
+    }
+
+    // TODO: Use guice providers instead.
+    // I need: 
+    // * Provider<ChannelFactory>  
+    // * Provider<ServerBootstrap>
+    // * Provider<ChannelPipelineFactory> (have NettyNetworkManager singleton injected)
+    // All of the above should probably return a singleton.
     channelFactory = 
       new NioServerSocketChannelFactory(Executors.newCachedThreadPool(),
                                         Executors.newCachedThreadPool());
@@ -145,6 +167,8 @@ public class NettyNetworkManager extends SimpleChannelUpstreamHandler implements
    * resources.
    */ 
   public void stop() {
+    started.set(false);
+
     ChannelGroupFuture future = allChannels.close();
     future.awaitUninterruptibly();
     channelFactory.releaseExternalResources();

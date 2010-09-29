@@ -18,25 +18,30 @@ package com.difficultology.flargmud.service;
 import junit.framework.*;
 import static org.mockito.Mockito.*;
 
+import com.difficultology.flargmud.network.NetworkManager;
+
 public class FlargMUDServerTest extends TestCase {
   /**
    * Check the start and stop methods.
    */
   public void testStartAndStop() {
-    Service mudServer = mock(FlargMUDServer.class);
+    NetworkManager networkManager = mock(NetworkManager.class);
+    FlargMUDServer server = new FlargMUDServer(networkManager);
+
     try {
-      mudServer.start();
+      server.start();
     } catch(Exception e) {
-      // If an exception is being thrown here then something is not right.
-      fail(e.getMessage()); 
+      fail(e.toString());
     }
-    mudServer.stop();
+
+    server.stop();
+
+    // Make sure the network manager is only started and stopped exactly once.
     try {
-      verify(mudServer).start();
+      verify(networkManager, atMost(1)).start();
+      verify(networkManager, atMost(1)).stop();
     } catch(Exception e) {
-      // If an exception is being thrown here then something is not right.
-      fail(e.getMessage()); 
+      fail(e.toString());
     }
-    verify(mudServer).stop();   
   }
 }
