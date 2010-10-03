@@ -15,13 +15,27 @@
  */ 
 package com.difficultology.flargmud;
 
+import java.net.InetSocketAddress;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
+import com.google.inject.Provides;
 import com.google.inject.name.Names;
+import org.jboss.netty.bootstrap.ServerBootstrap;
+import org.jboss.netty.channel.ChannelFactory;
+import org.jboss.netty.channel.ChannelPipelineFactory;
+import org.jboss.netty.channel.ChannelHandler;
+import org.jboss.netty.channel.group.ChannelGroup;
+import org.jboss.netty.channel.group.DefaultChannelGroup;
+
 import com.difficultology.flargmud.service.Service;
 import com.difficultology.flargmud.service.FlargMUDServer;
 import com.difficultology.flargmud.network.NetworkManager;
 import com.difficultology.flargmud.network.NettyNetworkManager;
+import com.difficultology.flargmud.network.NettyChannelPipelineFactory;
+import com.difficultology.flargmud.network.ServerBootstrapProvider;
+import com.difficultology.flargmud.network.ChannelFactoryProvider;
+import com.difficultology.flargmud.network.ChannelPipelineFactoryProvider;
 
 public class FlargMUDModule extends AbstractModule {
   /**
@@ -30,7 +44,13 @@ public class FlargMUDModule extends AbstractModule {
   @Override 
   protected void configure() {
     bind(Service.class).to(FlargMUDServer.class);
-    bind(NetworkManager.class).to(NettyNetworkManager.class).in(Singleton.class);
-    bindConstant().annotatedWith(Names.named("Server Port")).to(8080);
+    bind(NettyNetworkManager.class).in(Singleton.class);
+    bind(NetworkManager.class).to(NettyNetworkManager.class);
+    bind(ChannelHandler.class).to(NettyNetworkManager.class);
+    bind(ChannelFactory.class).toProvider(ChannelFactoryProvider.class);
+    bind(ChannelPipelineFactory.class).toProvider(ChannelPipelineFactoryProvider.class);
+    bind(ServerBootstrap.class).toProvider(ServerBootstrapProvider.class);
+    bind(ChannelGroup.class).toInstance(new DefaultChannelGroup("main"));
+    bind(InetSocketAddress.class).toInstance(new InetSocketAddress(8080));
   }
 }

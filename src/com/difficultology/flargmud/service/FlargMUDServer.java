@@ -79,7 +79,7 @@ public class FlargMUDServer implements Service {
     try {
       networkManager.start();
     } catch(IllegalStateException e) {
-      throw new IllegalStateException("Network manager already started!", e);
+      throw new IllegalStateException(e);
     } 
   }
 

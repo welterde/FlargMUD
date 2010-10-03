@@ -12,37 +12,29 @@
  * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
-package com.difficultology.flargmud.service;
+ */ 
+package com.difficultology.flargmud.network;
 
-import junit.framework.*;
+import java.util.concurrent.Executors;
 
-import static org.mockito.Mockito.*;
+import com.google.inject.Provider;
+import org.jboss.netty.channel.ChannelFactory;
+import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
-import com.difficultology.flargmud.network.NetworkManager;
-
-public class FlargMUDServerTest extends TestCase {
+public class ChannelFactoryProvider implements Provider<ChannelFactory> {
   /**
-   * Check the start and stop methods.
+   * The channel factory singleton that will be created on the call to get
+   * if it has not been created yet and will return that.
    */
-  public void testStartAndStop() {
-    NetworkManager networkManager = mock(NetworkManager.class);
-    FlargMUDServer server = new FlargMUDServer(networkManager);
+  private ChannelFactory channelFactory;
 
-    try {
-      server.start();
-    } catch(Exception e) {
-      fail(e.toString());
+  public ChannelFactory get() {
+    if(channelFactory==null) {
+      channelFactory = new NioServerSocketChannelFactory(
+                             Executors.newCachedThreadPool(),
+                             Executors.newCachedThreadPool());
     }
 
-    server.stop();
-
-    // Make sure the network manager is only started and stopped exactly once.
-    try {
-      verify(networkManager, times(1)).start();
-      verify(networkManager, times(1)).stop();
-    } catch(Exception e) {
-      fail(e.toString());
-    }
+    return channelFactory;
   }
 }

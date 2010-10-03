@@ -24,9 +24,9 @@ import static org.jboss.netty.channel.Channels.*;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import com.google.inject.Provider;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
-import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.ChannelGroupFuture;
 import org.jboss.netty.channel.Channels;
@@ -70,19 +70,37 @@ public class NettyNetworkManager extends SimpleChannelUpstreamHandler implements
   /**
    * A group of channels to use to close all channels later.
    */
-  private ChannelGroup allChannels = new DefaultChannelGroup("all");
+  private ChannelGroup allChannels;
   
   /**
-   * The port the server is to use.
+   * For getting the server bootstrap when we need it.
    */
-  private int port;
+  private final Provider<ServerBootstrap> serverBootstrapProvider;
 
+  /**
+   * To get the channel factory when we need it.
+   */
+  private final Provider<ChannelFactory> channelFactoryProvider;
+ 
+  /**
+   * What the server should listen on.
+   */ 
+  private InetSocketAddress serverAddress;
+ 
   /**
    * @param port the port for the server socket to use.
    */
   @Inject
-  public NettyNetworkManager(@Named("Server Port") int port) {
-    this.port = port;
+  public NettyNetworkManager( Provider<ServerBootstrap> 
+                               serverBootstrapProvider,
+                             Provider<ChannelFactory>
+                               channelFactoryProvider,
+                             ChannelGroup channelGroup, 
+                             InetSocketAddress serverAddress) {
+    this.serverBootstrapProvider = serverBootstrapProvider;
+    this.channelFactoryProvider = channelFactoryProvider;
+    this.allChannels = channelGroup;
+    this.serverAddress = serverAddress;
   }
 
   /**
@@ -136,30 +154,9 @@ public class NettyNetworkManager extends SimpleChannelUpstreamHandler implements
       throw new IllegalStateException("You already started the server!");   
     }
 
-    // TODO: Use guice providers instead.
-    // I need: 
-    // * Provider<ChannelFactory>  
-    // * Provider<ServerBootstrap>
-    // * Provider<ChannelPipelineFactory> (have NettyNetworkManager singleton injected)
-    // All of the above should probably return a singleton.
-    channelFactory = 
-      new NioServerSocketChannelFactory(Executors.newCachedThreadPool(),
-                                        Executors.newCachedThreadPool());
-    bootstrap = new ServerBootstrap(channelFactory);
-
-    final ChannelHandler handler = this;
-    bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
-        public ChannelPipeline getPipeline() throws Exception {
-          ChannelPipeline pipeline = pipeline();
-          pipeline.addLast("framer", new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
-          pipeline.addLast("decoder", new StringDecoder());
-          pipeline.addLast("encoder", new StringEncoder());
-          pipeline.addLast("handler", (ChannelHandler)handler);
-          return pipeline;
-        }
-      });
-
-    allChannels.add(bootstrap.bind(new InetSocketAddress(port)));      
+    bootstrap = serverBootstrapProvider.get();
+    channelFactory = channelFactoryProvider.get();
+    allChannels.add(bootstrap.bind(serverAddress));      
   }
  
   /**
