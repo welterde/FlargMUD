@@ -88,7 +88,10 @@ public class NettyNetworkManager extends SimpleChannelUpstreamHandler implements
   private InetSocketAddress serverAddress;
  
   /**
-   * @param port the port for the server socket to use.
+   * @param serverBootstrapProvider to get the server bootstrap when we need it
+   * @param channelFactoryProvider  to get the channel factory when we need it
+   * @param channelGroup            the channel group to use to manage channels
+   * @param serverAddress           the address and port to listen on
    */
   @Inject
   public NettyNetworkManager( Provider<ServerBootstrap> 
