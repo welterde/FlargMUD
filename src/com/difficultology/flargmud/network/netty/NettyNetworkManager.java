@@ -13,14 +13,15 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */ 
-package com.difficultology.flargmud.network;
+package com.difficultology.flargmud.network.netty;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.jboss.netty.channel.Channels.*;
+import com.difficultology.flargmud.network.NetworkManager;
+import com.difficultology.flargmud.network.UserChannel;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -44,6 +45,8 @@ import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelStateEvent;
+
+import static org.jboss.netty.channel.Channels.*;
 
 public class NettyNetworkManager extends SimpleChannelUpstreamHandler implements NetworkManager {
   /**
@@ -107,12 +110,19 @@ public class NettyNetworkManager extends SimpleChannelUpstreamHandler implements
   }
 
   /**
-   * Handle a message received from the given user.  
+   * Handle a message received from the given user.  This method is NOT 
+   * synchronized, as all it will do is pass the message onto a command 
+   * parser for parsing and then whatever executes the commands has to be 
+   * synchronized as executing two or more commands in parallel can lead to
+   * race conditions pretty easily.  An example of such a condition would be
+   * if two players both execute a command to pick up one item and both are
+   * executed at the same time then who gets the item?  Command execution
+   * MUST be synchronized and done in a single thread to keep things simple.
    * @param uc      the user sending the message
    * @param message the message being sent from the user
    */
-  public synchronized void receivedMessage(UserChannel uc, String message) {
-    // The code in this function is for testing purposes.
+  public void receivedMessage(UserChannel uc, String message) {
+    // The code in this method is for testing purposes.
     if(message.equals("quit")) {
       uc.disconnect(); 
     } else if(message.equals("shutdown")) {
@@ -130,10 +140,16 @@ public class NettyNetworkManager extends SimpleChannelUpstreamHandler implements
   }
 
   /** 
-   * Called when the given user connects to the server.
+   * Called when the given user connects to the server.  I intend to have this
+   * method call something from a login/registration system to take care of
+   * the user who has just connected.  This method is NOT synchronized, so 
+   * that system will need to make sure things are synchronized when needed.
+   * Synchronization will eventually be needed to prevent two users from 
+   * both logging in as the same user and prevent two users from both 
+   * registering the same username.
    * @param uc the user connecting to the server
    */
-  public synchronized void onConnect(UserChannel uc) { 
+  public void onConnect(UserChannel uc) { 
   }
   
   /**

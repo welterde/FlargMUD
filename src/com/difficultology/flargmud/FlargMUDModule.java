@@ -31,11 +31,11 @@ import org.jboss.netty.channel.group.DefaultChannelGroup;
 import com.difficultology.flargmud.service.Service;
 import com.difficultology.flargmud.service.FlargMUDServer;
 import com.difficultology.flargmud.network.NetworkManager;
-import com.difficultology.flargmud.network.NettyNetworkManager;
-import com.difficultology.flargmud.network.NettyChannelPipelineFactory;
-import com.difficultology.flargmud.network.ServerBootstrapProvider;
-import com.difficultology.flargmud.network.ChannelFactoryProvider;
-import com.difficultology.flargmud.network.ChannelPipelineFactoryProvider;
+import com.difficultology.flargmud.network.netty.NettyNetworkManager;
+import com.difficultology.flargmud.network.netty.NettyChannelPipelineFactory;
+import com.difficultology.flargmud.network.netty.ServerBootstrapProvider;
+import com.difficultology.flargmud.network.netty.ChannelFactoryProvider;
+import com.difficultology.flargmud.network.netty.ChannelPipelineFactoryProvider;
 
 public class FlargMUDModule extends AbstractModule {
   /**

@@ -13,9 +13,11 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-package com.difficultology.flargmud.network;
+package com.difficultology.flargmud.network.netty;
 
 import java.net.InetSocketAddress;
+
+import com.difficultology.flargmud.network.NetworkManager;
 
 import junit.framework.*;
 import com.google.inject.Provider;

@@ -13,28 +13,34 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */ 
-package com.difficultology.flargmud.network;
-
-import java.util.concurrent.Executors;
+package com.difficultology.flargmud.network.netty;
 
 import com.google.inject.Provider;
-import org.jboss.netty.channel.ChannelFactory;
-import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
+import com.google.inject.Inject;
+import org.jboss.netty.channel.ChannelPipelineFactory;
+import org.jboss.netty.channel.ChannelHandler;
 
-public class ChannelFactoryProvider implements Provider<ChannelFactory> {
+public class ChannelPipelineFactoryProvider implements Provider<ChannelPipelineFactory> {
   /**
-   * The channel factory singleton that will be created on the call to get
-   * if it has not been created yet and will return that.
+   * The channel handler for new clients.
    */
-  private ChannelFactory channelFactory;
+  private ChannelHandler channelHandler;
 
-  public ChannelFactory get() {
-    if(channelFactory==null) {
-      channelFactory = new NioServerSocketChannelFactory(
-                             Executors.newCachedThreadPool(),
-                             Executors.newCachedThreadPool());
+  /**
+   * The factory for creating channel pipelines for new clients.
+   */
+  private ChannelPipelineFactory channelPipelineFactory;
+
+  @Inject
+  public ChannelPipelineFactoryProvider(ChannelHandler channelHandler) {
+    this.channelHandler = channelHandler;
+  }
+
+  public ChannelPipelineFactory get() {
+    if(channelPipelineFactory==null) {
+      channelPipelineFactory = new NettyChannelPipelineFactory(channelHandler);    
     }
 
-    return channelFactory;
+    return channelPipelineFactory;
   }
 }

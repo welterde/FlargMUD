@@ -1,0 +1,10 @@
+Here is an unordered list of things to do:
+* Write up an alternative implementation for network manager, so there are  
+  more choices than just a netty based one.
+* Add an ant task for generating javadoc pages
+* Inject loggers, so we can have mock loggers put in instead so it doesn't 
+  write the log to a file when testing like it will eventually when normally
+  running.
+* Write up interfaces and modules for the numerous aspects of the server
+  that are still needed.
+* Write more things to do for this TODO.
