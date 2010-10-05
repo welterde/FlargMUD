@@ -15,6 +15,8 @@
  */ 
 package com.difficultology.flargmud.network;
 
+import java.net.InetSocketAddress;
+
 public interface UserChannel {
   /**
    * Send the given message to the user.
@@ -26,4 +28,9 @@ public interface UserChannel {
    * Disconnect the user from the server for whatever reason.
    */
   public void disconnect();
+
+  /**
+   * @return the IP address of the client
+   */
+  public InetSocketAddress getAddress();
 }

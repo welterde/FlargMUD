@@ -70,6 +70,8 @@
   </target> 
 
   <target name="run" depends="test">
-    <java jar="${jar.dir}/${jar.name}" fork="true" />
+    <java jar="${jar.dir}/${jar.name}" fork="true">
+      <jvmarg value="-Djava.util.logging.config.file=logging.properties" />
+    </java>
   </target>
 </project>

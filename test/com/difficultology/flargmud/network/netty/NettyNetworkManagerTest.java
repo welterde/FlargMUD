@@ -16,6 +16,7 @@
 package com.difficultology.flargmud.network.netty;
 
 import java.net.InetSocketAddress;
+import java.util.logging.Logger;
 
 import com.difficultology.flargmud.network.NetworkManager;
 
@@ -43,10 +44,11 @@ public class NettyNetworkManagerTest extends TestCase {
     when(channelFactoryProvider.get()).thenReturn(channelFactory);
     when(channelGroup.close()).thenReturn(channelGroupFuture);
     InetSocketAddress serverAddress = mock(InetSocketAddress.class);
+    Logger logger = mock(Logger.class);
     NetworkManager networkManager = new NettyNetworkManager(
                                           serverBootstrapProvider, 
                                           channelFactoryProvider, channelGroup,
-                                          serverAddress);
+                                          serverAddress, logger);
     try {
       networkManager.start(); 
     } catch(Exception e) {

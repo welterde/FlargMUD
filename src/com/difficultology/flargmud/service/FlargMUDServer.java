@@ -16,10 +16,9 @@
 package com.difficultology.flargmud.service;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Logger;
 
 import com.google.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.difficultology.flargmud.network.NetworkManager;
 
@@ -41,7 +40,7 @@ public class FlargMUDServer implements Service {
   /**
    * The logger to use for logging server related information.
    */
-  private final Logger log = LoggerFactory.getLogger(FlargMUDServer.class); 
+  private final Logger logger;
 
   /**
    * The FlargMUD server constructor.  Doesn't really do anything at the
@@ -62,8 +61,9 @@ public class FlargMUDServer implements Service {
    * The server must be started by calling start(), this does not start it.
    */
   @Inject
-  public FlargMUDServer(NetworkManager networkManager) {
+  public FlargMUDServer(NetworkManager networkManager, Logger logger) {
     this.networkManager = networkManager;
+    this.logger = logger;
   }
 
   /**
@@ -74,7 +74,7 @@ public class FlargMUDServer implements Service {
    * @throws nothing yet, but once it starts doing stuff this can happen
    */
   public void start() throws Exception {
-    log.info("Server starting!");
+    logger.info("FlargMUD server starting!");
   
     try {
       networkManager.start();
@@ -87,7 +87,7 @@ public class FlargMUDServer implements Service {
    * Requests immediate shutdown of the service.
    */
   public void stop() {
-    log.info("Stopping server!");
+    logger.info("Stopping FlargMUD server!");
     try {
       networkManager.stop();
     } catch(IllegalStateException e) {}

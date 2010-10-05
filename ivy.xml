@@ -4,8 +4,6 @@
     <dependency org="junit" name="junit" rev="4.8.1"/>
     <dependency org="com.google.inject" name="guice" rev="2.0" />
     <dependency org="org.mockito" name="mockito-core" rev="1.8.5" />
-    <dependency org="org.slf4j" name="slf4j-api" rev="1.6.1" />
-    <dependency org="org.slf4j" name="slf4j-jdk14" rev="1.6.1" />
     <dependency org="org.jboss.netty" name="netty" rev="3.2.2.Final" />
   </dependencies>
 </ivy-module>

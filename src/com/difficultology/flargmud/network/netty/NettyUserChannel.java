@@ -15,6 +15,8 @@
  */ 
 package com.difficultology.flargmud.network.netty;
 
+import java.net.InetSocketAddress;
+
 import com.difficultology.flargmud.network.UserChannel;
 
 import org.jboss.netty.channel.Channel;
@@ -55,5 +57,12 @@ public class NettyUserChannel implements UserChannel {
   public void disconnect() {
     c.close();
     nettyNetworkManager.disconnect(this);
+  }
+
+  /**
+   * @return the client's IP address
+   */
+  public InetSocketAddress getAddress() {
+    return (InetSocketAddress)c.getRemoteAddress();
   }
 }

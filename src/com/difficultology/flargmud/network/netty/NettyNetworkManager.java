@@ -19,6 +19,7 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Logger;
 
 import com.difficultology.flargmud.network.NetworkManager;
 import com.difficultology.flargmud.network.UserChannel;
@@ -89,6 +90,11 @@ public class NettyNetworkManager extends SimpleChannelUpstreamHandler implements
    * What the server should listen on.
    */ 
   private InetSocketAddress serverAddress;
+
+  /**
+   * The logger to use to log various bits of information to.
+   */
+  private final Logger logger;
  
   /**
    * @param serverBootstrapProvider to get the server bootstrap when we need it
@@ -102,11 +108,12 @@ public class NettyNetworkManager extends SimpleChannelUpstreamHandler implements
                              Provider<ChannelFactory>
                                channelFactoryProvider,
                              ChannelGroup channelGroup, 
-                             InetSocketAddress serverAddress) {
+                             InetSocketAddress serverAddress, Logger logger) {
     this.serverBootstrapProvider = serverBootstrapProvider;
     this.channelFactoryProvider = channelFactoryProvider;
     this.allChannels = channelGroup;
     this.serverAddress = serverAddress;
+    this.logger = logger;
   }
 
   /**
@@ -122,6 +129,9 @@ public class NettyNetworkManager extends SimpleChannelUpstreamHandler implements
    * @param message the message being sent from the user
    */
   public void receivedMessage(UserChannel uc, String message) {
+    logger.info("Message received from " + uc.getAddress().getAddress() + 
+                  " containing: \"" + message + "\"");
+
     // The code in this method is for testing purposes.
     if(message.equals("quit")) {
       uc.disconnect(); 
@@ -150,6 +160,7 @@ public class NettyNetworkManager extends SimpleChannelUpstreamHandler implements
    * @param uc the user connecting to the server
    */
   public void onConnect(UserChannel uc) { 
+    logger.info("User at " + uc.getAddress().getAddress() + " connected.");
   }
   
   /**
@@ -173,6 +184,8 @@ public class NettyNetworkManager extends SimpleChannelUpstreamHandler implements
       throw new IllegalStateException("You already started the server!");   
     }
 
+    logger.info("Network manager starting!");
+
     bootstrap = serverBootstrapProvider.get();
     channelFactory = channelFactoryProvider.get();
     allChannels.add(bootstrap.bind(serverAddress));      
@@ -184,7 +197,7 @@ public class NettyNetworkManager extends SimpleChannelUpstreamHandler implements
    */ 
   public void stop() {
     started.set(false);
-
+    logger.info("Network manager stopping!");
     ChannelGroupFuture future = allChannels.close();
     future.awaitUninterruptibly();
     channelFactory.releaseExternalResources();

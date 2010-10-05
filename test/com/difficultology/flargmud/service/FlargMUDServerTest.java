@@ -15,11 +15,13 @@
  */
 package com.difficultology.flargmud.service;
 
+import java.util.logging.Logger;
+
 import junit.framework.*;
 
-import static org.mockito.Mockito.*;
-
 import com.difficultology.flargmud.network.NetworkManager;
+
+import static org.mockito.Mockito.*;
 
 public class FlargMUDServerTest extends TestCase {
   /**
@@ -27,7 +29,8 @@ public class FlargMUDServerTest extends TestCase {
    */
   public void testStartAndStop() {
     NetworkManager networkManager = mock(NetworkManager.class);
-    FlargMUDServer server = new FlargMUDServer(networkManager);
+    Logger logger = mock(Logger.class);
+    FlargMUDServer server = new FlargMUDServer(networkManager, logger);
 
     try {
       server.start();
