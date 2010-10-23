@@ -43,7 +43,7 @@ public class FlargMUDModule extends AbstractModule {
    */
   @Override 
   protected void configure() {
-    bind(Service.class).to(FlargMUDServer.class);
+    bind(Service.class).to(FlargMUDServer.class).in(Singleton.class);
     bind(NettyNetworkManager.class).in(Singleton.class);
     bind(NetworkManager.class).to(NettyNetworkManager.class);
     bind(ChannelHandler.class).to(NettyNetworkManager.class);
