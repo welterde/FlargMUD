@@ -1,10 +1,27 @@
 Here is an unordered list of things to do:
 * Write up an alternative implementation for network manager, so there are  
   more choices than just a netty based one.
+* Write up interfaces for a command parser, command executor, user and command.
+* Implement a command parser, command executor, user and some commands.
+* Write some unit tests that test to the fullest extent possible the command
+  parser, command executor, user and command implementations.
+* Write up some way to register and login to the server, possibly do it like
+  I did in RedditMUD.
+* Write up some way for commands to be able to last past a single interaction.
+  Possibly do it like I did in RedditMUD with the MessageQueue class. By last
+  past a single interaction I mean so that a command could prompt the user
+  a couple times past the command's invocation, the command would essentially
+  take over accepting the user's input until the command is done.
+* Think up a better way of handling user ranks than I did in RedditMUD.
+* Think quite a bit on how to go about writing a database backend interface so
+  that it would be possible for it to be applicable to both SQL and NoSQL 
+  databases and possibly flat files as well.  The first implementation will
+  most likely be H2 based.
+* Think quite a bit on the topic of server scripting and just how much should
+  the user should be able to script.  Make sure to have it be quite modular
+  so that one could easily replace a JRuby script handler with a Jython based
+  one and plenty of other possible scripting languages as well.
 * Add an ant task for generating javadoc pages
-* Inject loggers, so we can have mock loggers put in instead so it doesn't 
-  write the log to a file when testing like it will eventually when normally
-  running.
 * Write up interfaces and modules for the numerous aspects of the server
   that are still needed.
 * Write more things to do for this TODO.
